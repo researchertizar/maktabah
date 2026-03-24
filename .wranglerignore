@@ -1,0 +1,26 @@
+# ── Wrangler asset upload exclusions ──────────────────────────
+# These are excluded from Cloudflare asset uploads.
+# The actual deploy uses ./dist/ (see wrangler.jsonc) so this is
+# a safety net in case the directory is ever changed back to ".".
+
+# Node.js backend — deployed separately on Railway/Render/Fly.io
+node_modules/
+api/
+package.json
+package-lock.json
+bun.lockb
+
+# Environment — never upload secrets
+.env
+.env.*
+!.env.example
+
+# Build/editor artefacts
+dist/
+.cache/
+*.bak
+*.swp
+.DS_Store
+Thumbs.db
+.vscode/
+.wrangler/
