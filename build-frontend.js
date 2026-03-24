@@ -19,6 +19,7 @@ const DIST = path.join(ROOT, 'dist');
 /* Files and directories to copy into dist/ */
 const INCLUDE = [
   'index.html',
+  'sw.js',
   'manifest.json',
   'css',
   'js',

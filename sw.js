@@ -4,10 +4,10 @@
  * Fix #3: Scheherazade New woff2 cached during install for offline Arabic
  */
 
-const CACHE_VER  = 'v8.1.0';
-const SHELL_KEY  = `maktabah-shell-${CACHE_VER}`;
-const API_KEY    = `maktabah-api-${CACHE_VER}`;
-const FONT_KEY   = 'maktabah-fonts-v1'; /* stable key — fonts rarely change */
+const CACHE_VER = 'v8.1.0';
+const SHELL_KEY = `maktabah-shell-${CACHE_VER}`;
+const API_KEY = `maktabah-api-${CACHE_VER}`;
+const FONT_KEY = 'maktabah-fonts-v1'; /* stable key — fonts rarely change */
 
 /* Scheherazade New woff2 — both weights. Fetch at install for offline Arabic. */
 const ARABIC_FONT_URLS = [
@@ -49,6 +49,7 @@ const SHELL_URLS = [
   '/js/madhab.js',
   '/js/demo.js',
   '/js/app.js',
+  '/js/sw.js',
   '/css/fixes.css',
 ];
 
@@ -66,7 +67,7 @@ self.addEventListener('install', e => {
               const resp = await fetch(url, { mode: 'cors', credentials: 'omit' });
               if (resp.ok) await c.put(url, resp);
             }
-          } catch(e) { console.warn('[SW font cache]', url, e.message); }
+          } catch (e) { console.warn('[SW font cache]', url, e.message); }
         }
       }),
     ]).then(() => self.skipWaiting())
@@ -91,9 +92,9 @@ self.addEventListener('activate', e => {
 self.addEventListener('fetch', e => {
   const { url } = e.request;
 
-  if (e.request.method !== 'GET')      return;
+  if (e.request.method !== 'GET') return;
   if (url.includes('verses.quran.com')) return; // audio CDN — network only
-  if (url.includes('/api/ai/'))         return; // never cache AI
+  if (url.includes('/api/ai/')) return; // never cache AI
 
   /* Fix #2/#3: serve Arabic fonts from cache first, fallback network */
   if (url.includes('fonts.gstatic.com')) {
@@ -104,20 +105,23 @@ self.addEventListener('fetch', e => {
   /* Fix #2: intercept Google Fonts CSS — inject font-display:swap */
   if (url.includes('fonts.googleapis.com')) {
     e.respondWith(
-      fetch(e.request)
-        .then(resp => {
-          if (!resp.ok) return resp;
-          return resp.text().then(css => {
-            const patched = css.replace(/font-display:[^;]+;/g, 'font-display:swap;')
-                              .replace(/(src:[^}]+})/g, m =>
-                                m.includes('font-display') ? m : m.replace('}', '
-  font-display: swap;
-}')
-                              );
-            return new Response(patched, { headers: { 'Content-Type': 'text/css', 'Cache-Control': 'max-age=86400' } });
+      fetch(e.request).then(async (resp) => {
+        if (!resp.ok) return resp;
+
+        const css = await resp.text();
+
+        const patched = css.includes('font-display')
+          ? css.replace(/font-display:\s*[^;]+;/g, 'font-display: swap;')
+          : css.replace(/@font-face\s*{([^}]*)}/g, (match, body) => {
+            return `@font-face {${body}\n  font-display: swap;\n}`;
           });
-        })
-        .catch(() => caches.match(e.request))
+
+        return new Response(patched, {
+          headers: {
+            'Content-Type': 'text/css',
+          },
+        });
+      }).catch(() => caches.match(e.request))
     );
     return;
   }

@@ -20,7 +20,7 @@ const AUDIO_CDN = 'https://verses.quran.com/';
  *
  * Zero-cost hosting: Railway · Render · Fly.io (all have free tiers)
  */
-const PRODUCTION_BACKEND_URL = 'maktabah-production.up.railway.app'; // <-- SET THIS before going live
+const PRODUCTION_BACKEND_URL = 'https://maktabah-production.up.railway.app'; // <-- SET THIS before going live
 
 const BACKEND = (() => {
   if (window.MAKTABAH_BACKEND_URL) return window.MAKTABAH_BACKEND_URL.replace(/\/$/, '');
