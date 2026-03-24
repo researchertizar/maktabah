@@ -5,6 +5,7 @@
   "observability": {
     "enabled": true
   },
+
   /*
    * ASSETS — static frontend files only.
    * "directory" must point at a folder containing ONLY the static site.
@@ -12,30 +13,8 @@
    * so node_modules and api/ never get uploaded.
    */
   "assets": {
-    "directory": "./dist",
-    "binding": "ASSETS"{
-      "$schema": "node_modules/wrangler/config-schema.json",
-      "name": "maktabah",
-      "compatibility_date": "2025-09-27",
-      "observability": {
-        "enabled": true
-      },
-      /*
-   * ASSETS — static frontend files only.
-   * "directory" must point at a folder containing ONLY the static site.
-   * We use a dedicated "dist/" folder (see package.json build script)
-   * so node_modules and api/ never get uploaded.
-   */
-      "assets": {
-        "directory": "./dist"
-      },
-      "compatibility_flags": [
-        "nodejs_compat"
-      ]
-    }
+    "directory": "./dist"
   },
-  
-  "compatibility_flags": [
-    "nodejs_compat"
-  ]
+
+  "compatibility_flags": ["nodejs_compat"]
 }
