@@ -1,0 +1,535 @@
+/* ═══════════════════════════════════════════════
+   css/reader.css — Verse Reader Styles
+   ═══════════════════════════════════════════════ */
+
+/* ── READER TOOLBAR ── */
+.rtb {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--bd);
+  padding: 0 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 52px;
+  overflow-x: auto;
+  flex-shrink: 0;
+  scrollbar-width: none;
+}
+.rtb::-webkit-scrollbar { display: none; }
+
+.rtb-back {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--t2);
+  padding: 6px 10px;
+  border-radius: var(--r-sm);
+  transition: background var(--trans), color var(--trans);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.rtb-back:hover { background: var(--sf); color: var(--t1); }
+.rtb-div        { width: 1px; height: 20px; background: var(--bd2); flex-shrink: 0; }
+.rtb-title      { font-size: var(--text-base); font-weight: 700; color: var(--t1); white-space: nowrap; flex-shrink: 0; }
+.rtb-meta       { font-size: var(--text-xs); color: var(--t3); white-space: nowrap; flex-shrink: 0; }
+.rtb-sp         { flex: 1; }
+
+.rtb-btn {
+  padding: 5px 10px;
+  border-radius: var(--r-sm);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--t2);
+  background: var(--sf);
+  border: 1px solid var(--bd);
+  white-space: nowrap;
+  transition: all var(--trans);
+  flex-shrink: 0;
+}
+.rtb-btn:hover { border-color: var(--em); color: var(--t1); }
+.rtb-btn.on    { background: var(--em-dim); color: var(--em3); border-color: var(--em-glow); }
+
+.rtb-sel {
+  background: var(--sf);
+  border: 1px solid var(--bd);
+  border-radius: var(--r-sm);
+  padding: 5px 8px;
+  font-size: var(--text-xs);
+  color: var(--t2);
+  cursor: pointer;
+  outline: none;
+  transition: border-color var(--trans);
+  flex-shrink: 0;
+}
+.rtb-sel:focus { border-color: var(--em); }
+
+/* ── CHAPTER HEADER ── */
+.ch-hdr {
+  text-align: center;
+  padding: 40px 24px 32px;
+  background: linear-gradient(180deg, var(--bg3) 0%, transparent 100%);
+}
+.ch-num    { font-size: var(--text-xs); color: var(--em3); font-weight: 700; text-transform: uppercase; letter-spacing: .07em; margin-bottom: 8px; }
+.ch-ar     { font-family: var(--font-ar); font-size: 48px; color: var(--gd); direction: rtl; line-height: 1.6; margin-bottom: 6px; }
+.ch-en     { font-size: var(--text-2xl); font-weight: 700; color: var(--t1); margin-bottom: 4px; }
+.ch-sub    { font-size: var(--text-md); color: var(--t2); margin-bottom: 12px; }
+.ch-badges { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-bottom: 18px; }
+.ch-b      { padding: 4px 12px; background: var(--sf); border: 1px solid var(--bd); border-radius: var(--r-full); font-size: var(--text-xs); color: var(--t3); }
+.ch-acts   { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+
+/* ── BISMILLAH ── */
+.reader-bism {
+  font-family: var(--font-ar);
+  font-size: 30px;
+  color: var(--gd);
+  text-align: center;
+  direction: rtl;
+  padding: 20px 24px 0;
+  line-height: 1.8;
+}
+
+/* ── VERSE ── */
+.verse {
+  padding: 22px 24px;
+  border-bottom: 1px solid var(--bd);
+  transition: background var(--trans);
+}
+.verse:hover          { background: rgba(255,255,255,.018); }
+.verse.hi             { background: var(--em-dim) !important; transition: background .5s; }
+.verse.playing-v {
+  background: var(--gd-dim, rgba(200,160,74,.08)) !important;
+  border-left: 3px solid var(--gd) !important;
+  border-radius: 0 var(--r) var(--r) 0 !important;
+  transition: background .3s ease, border-color .3s ease;
+}
+.verse.reading        {
+  border-left: 3px solid var(--em);
+  padding-left: 21px;
+  background: rgba(45,134,83,.04);
+  transition: border-left-color .3s, background .3s;
+}
+
+.v-ar-wrap  { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 14px; }
+.v-ar       { font-family: var(--font-ar); direction: rtl; line-height: 2.1; flex: 1; text-align: right; color: var(--t1); }
+.v-ayah-mark { font-size: .8em; color: var(--gd); margin-right: 4px; }
+.v-num      { width: 32px; height: 32px; border-radius: 50%; background: var(--sf); border: 1px solid var(--bd); display: flex; align-items: center; justify-content: center; font-size: var(--text-xs); font-weight: 700; color: var(--t3); flex-shrink: 0; margin-top: 6px; }
+.v-tr       { font-size: var(--text-base); color: var(--t2); line-height: 1.8; margin-bottom: 12px; padding-right: 4px; }
+
+/* ── WORD BY WORD ── */
+.v-wbw { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; direction: rtl; margin-bottom: 14px; }
+.ww    { text-align: center; padding: 7px 9px; background: var(--sf); border: 1px solid var(--bd); border-radius: var(--r-sm); min-width: 56px; transition: background var(--trans); }
+.ww.ww-play         { cursor: pointer; }
+.ww.ww-play:hover   { background: var(--em-dim); border-color: var(--em-glow); }
+.ww-ar { display: block; font-family: var(--font-ar); line-height: 1.8; }
+.ww-tr { display: block; font-size: 9.5px; color: var(--gd); margin-top: 2px; }
+.ww-en { display: block; font-size: 9px; color: var(--t3); margin-top: 1px; }
+
+/* ── VERSE ACTIONS ── */
+.v-acts { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 6px; }
+.va {
+  padding: 4px 10px;
+  border-radius: var(--r-sm);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--t3);
+  background: var(--sf);
+  border: 1px solid var(--bd);
+  transition: all var(--trans);
+}
+.va:hover   { background: var(--sf2); color: var(--t2); border-color: var(--bd2); }
+.va.on      { background: var(--em-dim); color: var(--em3); border-color: var(--em-glow); }
+.va-ai      { color: var(--gd) !important; border-color: var(--gd-dim) !important; }
+.va-ai:hover { background: var(--gd-dim) !important; color: var(--gd2) !important; }
+
+/* ── NOTE BOX ── */
+.v-note {
+  background: rgba(200,160,74,.06);
+  border: 1px solid rgba(200,160,74,.2);
+  border-radius: var(--r-sm);
+  padding: 10px 14px;
+  margin-top: 8px;
+  display: none;
+}
+.v-note.open { display: block; }
+.v-note p    { font-size: var(--text-base); color: var(--t2); line-height: 1.7; }
+
+
+/* ── TAFSIR BOX ── */
+.v-taf {
+  background: var(--sf);
+  border: 1px solid var(--bd);
+  border-radius: var(--r-md);
+  padding: 0;
+  margin-top: 10px;
+  display: none;
+  overflow: hidden;
+  transition: border-color var(--trans);
+}
+.v-taf.open {
+  display: block;
+  border-color: var(--em-glow);
+  border-left: 3px solid var(--em2);
+  animation: fadeIn .2s ease-out;
+}
+.taf-hdr {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: var(--sf2);
+  border-bottom: 1px solid var(--bd);
+  gap: 8px;
+}
+.taf-hdr-left { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.taf-src {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--em2);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  background: var(--em-dim);
+  padding: 3px 8px;
+  border-radius: 999px;
+}
+.taf-key {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--t3);
+  background: var(--sf);
+  border: 1px solid var(--bd);
+  padding: 2px 7px;
+  border-radius: 4px;
+}
+.taf-close-btn {
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  background: var(--sf);
+  border: 1px solid var(--bd);
+  color: var(--t3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: color var(--trans), background var(--trans);
+}
+.taf-close-btn:hover { color: var(--t1); background: var(--sf2); }
+.taf-body {
+  padding: 16px;
+  max-height: 55vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: var(--bd2) transparent;
+}
+.taf-p {
+  font-size: 14px;
+  line-height: 1.9;
+  color: var(--t2);
+  margin-bottom: 10px;
+}
+.taf-p:last-child { margin-bottom: 0; }
+.taf-acts {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 10px 14px 12px;
+  border-top: 1px solid var(--bd);
+  background: var(--sf2);
+}
+
+/* Malayalam resources section */
+.taf-ml-section {
+  padding: 12px 14px;
+  border-top: 1px solid var(--bd);
+  background: linear-gradient(135deg, var(--em-dim), transparent);
+}
+.taf-ml-label {
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--em2);
+  text-transform: uppercase;
+  letter-spacing: .07em;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.taf-ml-label::before {
+  content: '';
+  width: 3px; height: 12px;
+  background: var(--em2);
+  border-radius: 2px;
+  display: inline-block;
+}
+.taf-ml-links { display: flex; flex-wrap: wrap; gap: 6px; }
+.taf-ml-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px;
+  background: var(--sf);
+  border: 1px solid var(--em-glow);
+  border-radius: var(--r-sm);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--em2);
+  transition: background var(--trans), border-color var(--trans);
+  text-decoration: none;
+}
+.taf-ml-link:hover { background: var(--em-dim); border-color: var(--em2); }
+.taf-ml-link::after { content: '↗'; font-size: 10px; opacity: .6; }
+
+/* Tafsir scholar switcher tabs */
+.taf-tabs {
+  display: flex;
+  gap: 4px;
+  padding: 8px 12px;
+  background: var(--sf2);
+  border-bottom: 1px solid var(--bd);
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.taf-tabs::-webkit-scrollbar { display: none; }
+.taf-tab {
+  flex-shrink: 0;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--t3);
+  background: var(--sf);
+  border: 1px solid var(--bd);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color var(--trans), background var(--trans), border-color var(--trans);
+}
+.taf-tab:hover { color: var(--t1); border-color: var(--em); }
+.taf-tab.active {
+  color: var(--em2);
+  background: var(--em-dim);
+  border-color: var(--em-glow);
+}
+.taf-loading {
+  color: var(--em2);
+  font-size: 12.5px;
+  padding: 12px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.taf-loading::before {
+  content: '';
+  width: 14px; height: 14px;
+  border: 2px solid var(--em-dim);
+  border-top-color: var(--em2);
+  border-radius: 50%;
+  animation: spin .7s linear infinite;
+  flex-shrink: 0;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── PAGINATION ── */
+.pgn { display: flex; align-items: center; gap: 4px; padding: 24px; justify-content: center; flex-wrap: wrap; }
+.pgb {
+  min-width: 34px;
+  height: 34px;
+  border-radius: var(--r-sm);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--t3);
+  background: var(--sf);
+  border: 1px solid var(--bd);
+  padding: 0 8px;
+  transition: all var(--trans);
+}
+.pgb:hover:not([disabled]) { background: var(--sf2); color: var(--t1); }
+.pgb.on         { background: var(--em-dim); color: var(--em3); border-color: var(--em-glow); }
+.pgb[disabled]  { opacity: .35; cursor: not-allowed; }
+.pgb-ellip      { font-size: var(--text-sm); color: var(--t3); padding: 0 4px; }
+
+/* ── CHAPTER NAVIGATION ── */
+.ch-nav      { display: flex; align-items: center; justify-content: space-between; padding: 20px 24px 40px; gap: 12px; }
+.ch-navbtn {
+  padding: 9px 18px;
+  background: var(--sf);
+  border: 1px solid var(--bd);
+  border-radius: var(--r);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--t2);
+  transition: all var(--trans);
+}
+.ch-navbtn:hover:not([disabled]) { border-color: var(--em); color: var(--t1); }
+.ch-navbtn[disabled] { opacity: .3; cursor: not-allowed; }
+.ch-navpos   { font-size: var(--text-sm); color: var(--t3); }
+
+
+/* ═══════════════════════════════════════════════
+   ENHANCED AUDIO-VISUAL SYNC STYLES
+   ═══════════════════════════════════════════════ */
+
+/* Currently playing verse — gold left bar + warm highlight */
+.verse.playing-v {
+  background: linear-gradient(to right, rgba(200,160,74,.12), rgba(200,160,74,.04)) !important;
+  border-left: 4px solid var(--gd) !important;
+  border-radius: 0 var(--r) var(--r) 0 !important;
+  transition: background .25s ease, border-color .2s ease !important;
+  animation: verseHighlightIn .35s ease-out;
+  position: relative;
+}
+
+@keyframes verseHighlightIn {
+  from { background: rgba(200,160,74,.25); border-left-color: var(--gd2); }
+  to   { background: linear-gradient(to right, rgba(200,160,74,.12), rgba(200,160,74,.04)); border-left-color: var(--gd); }
+}
+
+/* Playing pulse on verse number badge */
+.v-num.playing-pulse {
+  background: var(--gd) !important;
+  color: #000 !important;
+  border-color: var(--gd2) !important;
+  transform: scale(1.15);
+  transition: all .3s ease;
+}
+
+/* Playing verse Arabic text — slight gold tint */
+.verse.playing-v .v-ar {
+  color: var(--gd3, #f5e0a0) !important;
+  transition: color .3s ease;
+}
+
+/* Smooth waveform animation on playing verse number */
+.v-num.playing {
+  position: relative;
+  overflow: hidden;
+}
+.v-num.playing::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 0%, var(--gd-dim) 50%, transparent 100%);
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+@keyframes shimmer {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* Reading time badge in chapter header */
+.ch-read-time {
+  font-size: 12px;
+  color: var(--t3);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.ch-read-time::before {
+  content: '⏱';
+  font-size: 11px;
+}
+
+/* ─── FIX #13: Mobile reader toolbar — compress & hide range slider ─── */
+@media (max-width: 600px) {
+  .rtb-sz-wrap    { display: none; }          /* Fix #13: remove from layout on mobile */
+  .rtb-sz-range   { display: none !important; }
+  
+  .rtb {
+    padding: 0 6px;
+    gap: 3px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .rtb::-webkit-scrollbar { display: none; }
+  
+  .rtb-btn {
+    padding: 5px 7px;
+    font-size: 11px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .rtb-back {
+    flex-shrink: 0;
+    font-size: 11px;
+    padding: 5px 7px;
+  }
+  .rtb-title {
+    font-size: 12px;
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .rtb-meta  { display: none; }
+  .rtb-sel   { font-size: 11px; max-width: 90px; flex-shrink: 0; }
+}
+
+/* ── FIX #7: Hifz mode ── */
+.hifz-block {
+  display: inline-block;
+  background: var(--t1);
+  color: var(--t1);
+  border-radius: 6px;
+  cursor: pointer;
+  user-select: none;
+  transition: background .25s, color .25s;
+  padding: 2px 6px;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: 2;
+}
+.hifz-block::before { content: ' Tap to reveal'; font-size: 12px; font-family: var(--font-ui); color: var(--t3); display: block; direction: ltr; margin-bottom: 4px; }
+.hifz-block.hifz-revealed,
+.hifz-block:active { background: transparent !important; color: inherit !important; }
+
+/* ── Hifz word tiles ── */
+.hifz-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  direction: rtl;
+  align-items: center;
+  padding: 8px 0;
+}
+.hifz-word {
+  display: inline-block;
+  background: var(--t1);
+  color: var(--t1);
+  border-radius: 6px;
+  padding: 4px 8px;
+  cursor: pointer;
+  user-select: none;
+  font-family: var(--font-ar);
+  transition: background .2s, color .2s, transform .15s;
+  border: 1px solid var(--bd2);
+}
+.hifz-word:hover { transform: scale(1.05); }
+.hifz-word.hifz-show {
+  background: transparent;
+  color: var(--gd3, #f5e0a0);
+  border-color: transparent;
+}
+.hifz-reveal-all,
+.hifz-hide-all {
+  direction: ltr;
+  font-size: 11px;
+  padding: 4px 10px;
+  border: 1px solid var(--bd);
+  border-radius: 99px;
+  color: var(--t3);
+  background: var(--sf);
+  cursor: pointer;
+  transition: color .15s, border-color .15s;
+  flex-shrink: 0;
+  margin-right: 4px;
+}
+.hifz-reveal-all:hover { color: var(--em3); border-color: var(--em); }
+.hifz-hide-all:hover   { color: var(--red);  border-color: var(--red); }

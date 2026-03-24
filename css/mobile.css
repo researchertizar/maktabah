@@ -1,0 +1,470 @@
+/* ═══════════════════════════════════════════════
+   css/mobile.css — Responsive Design System v3
+   
+   Philosophy:
+   • Desktop (>960): Full features, sidebar, advanced controls
+   • Tablet (601–960): Sidebar drawer, reduced clutter
+   • Mobile (≤600): Minimal, focused, beginner-friendly
+   • Small (≤380): Essential content only
+   ═══════════════════════════════════════════════ */
+
+/* ═══════════════════════
+   TABLET  601–960px
+═══════════════════════ */
+@media (max-width: 960px) {
+
+  /* Sidebar becomes a slide-in drawer */
+  #sidebar {
+    position: fixed;
+    top: 0; left: 0; height: 100%;
+    transform: translateX(-100%);
+    z-index: 300;
+    width: var(--sidebar-w) !important;
+    min-width: var(--sidebar-w) !important;
+    box-shadow: var(--sh3);
+    transition: transform var(--trans-slow);
+  }
+  #sidebar.mob-open  { transform: translateX(0); }
+  #sidebar.collapsed { transform: translateX(-100%); }
+
+  /* Show mobile nav, hide desktop tab bar */
+  .tn-center { display: none; }
+  #mob-nav   { display: flex; }
+
+  /* Player above mobile nav */
+  #player  { bottom: var(--mobnav-h); }
+  #toast   { bottom: calc(var(--player-h) + var(--mobnav-h) + 10px); }
+  #fab-top { bottom: calc(var(--player-h) + var(--mobnav-h) + 16px); }
+
+  /* Grids */
+  .stats-row { grid-template-columns: repeat(3,1fr); gap: 8px; }
+  .pop-grid  { grid-template-columns: repeat(2,1fr); }
+}
+
+/* ═══════════════════════
+   MOBILE  ≤ 600px
+   Minimal, focused, beginner-friendly
+═══════════════════════ */
+@media (max-width: 600px) {
+
+  /* ── Page padding: full width with side margins ── */
+  .home-wrap,
+  .ai-wrap,
+  .corpus-wrap,
+  .radio-wrap { padding: 12px 16px 80px; width: 100%; max-width: 100%; box-sizing: border-box; }
+
+  /* ── Topnav: compact ── */
+  #topnav { padding: 0 10px; gap: 4px; }
+  .tn-right .search-wrap { display: none; } /* Use hero search on home */
+
+  /* ── Announce bar: hide on mobile (too much text, not essential) ── */
+  #ann { display: none; }
+
+  /* ── Branding: show logo only, hide wordmark ── */
+  .topnav-brand-name { display: none; }
+
+  /* ── HOME: simplified layout ── */
+  .greeting-text  { font-size: 18px; }
+  .greeting-sub   { display: none; } /* Remove "Welcome to Maktabah · مكتبة" clutter */
+  .greeting-row   { margin-bottom: 12px; gap: 6px; }
+
+  /* Date: show Hijri only */
+  .hijri-badge .date-greg,
+  .hijri-badge .date-time,
+  .hijri-badge .date-sep   { display: none; }
+  /* Remove date badge entirely on mobile — unreliable on some devices */
+  .hijri-badge { display: none !important; }
+
+  /* Stats compact */
+  .stats-row  { gap: 6px; }
+  .stat-num   { font-size: 20px; }
+  .stat-lbl   { font-size: 10px; }
+
+  /* Popular surahs: 2 cols */
+  .pop-grid  { grid-template-columns: repeat(2,1fr); gap: 8px; }
+  .pop-icon  { font-size: 18px; }
+  .pop-name  { font-size: 12.5px; }
+  .pop-sub   { font-size: 10.5px; }
+
+  /* Chapter grid: tighter */
+  .cg-row    { padding: 8px 10px; }
+  .cg-num    { width: 30px; height: 30px; font-size: 11px; }
+  .cg-name   { font-size: 13px; }
+  .cg-sub    { font-size: 10.5px; }
+
+  /* Chapter sort toolbar: minimal */
+  .sh        { margin-top: 16px; margin-bottom: 10px; }
+  .ch-grid-toolbar { gap: 6px; }
+  .sort-btn  { padding: 4px 8px; font-size: 11px; }
+
+  /* ── READER: mobile-optimized ── */
+  .verse { padding: 14px 12px; }
+  .v-ar  { line-height: 2; }
+
+  /* Reader toolbar: wrap, hide non-essential on mobile */
+  .rtb {
+    flex-wrap: wrap;
+    height: auto;
+    min-height: 46px;
+    padding: 6px 8px;
+    gap: 4px;
+    row-gap: 4px;
+  }
+  .rtb-sp    { display: none; }
+  .rtb-meta  { display: none; }   /* Hide "114 · 7 verses" — visible in header */
+  .rtb-sel   { font-size: 11px; padding: 4px 6px; max-width: 115px; }
+  .rtb-btn   { font-size: 11px; padding: 4px 8px; }
+  /* Size widget uses +/- buttons; range slider hidden */
+  .rtb-sz-range  { display: none; }
+  /* Allow toolbar to scroll on mobile without wrapping awkwardly */
+  .rtb { overflow-x: auto; overflow-y: visible; flex-wrap: nowrap; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+  .rtb::-webkit-scrollbar { display: none; }
+
+  /* Verse actions: icon-style on mobile, no text */
+  .v-acts    { gap: 4px; }
+  .va        { padding: 5px 7px; font-size: 11px; }
+
+  /* Verse action labels: shorten on mobile */
+  .va .va-play-txt  { display: none; }
+  .va .va-bm-txt    { display: none; }
+
+  /* Chapter header: compact */
+  .ch-hdr  { padding: 24px 16px 20px; }
+  .ch-ar   { font-size: 32px; }
+  .ch-en   { font-size: 18px; }
+  .ch-sub  { font-size: 13px; }
+  .ch-acts { flex-wrap: wrap; gap: 6px; }
+  .ch-acts .btn-gold,
+  .ch-acts .btn-ghost { padding: 7px 14px; font-size: 12.5px; }
+
+  /* Pagination compact */
+  .pgn     { padding: 12px; gap: 3px; }
+  .pgb     { min-width: 30px; height: 30px; font-size: 12px; }
+
+  /* Chapter nav buttons */
+  .ch-nav     { padding: 12px 16px 60px; }
+  .ch-navbtn  { padding: 7px 14px; font-size: 12.5px; }
+
+  /* Bismillah */
+  .reader-bism { font-size: 24px; padding: 14px 16px 0; }
+
+  /* ── PLAYER: minimal on mobile ── */
+  .pl-track   { width: 120px; }
+  .pl-vol     { display: none; }   /* Hide volume slider — use system controls */
+  .pl-btn     { width: 32px; height: 32px; font-size: 12px; }
+  .pl-btn-play { width: 38px; height: 38px; }
+  /* Keep progress bar visible on mobile — essential for playback feedback */
+  .pl-extra   { display: flex; }
+  .pl-times   { display: flex; }
+  .pl-opts    { gap: 4px; }
+
+  /* ── MUSHAF: mobile-optimized ── */
+  .mc         { gap: 5px; padding: 7px 10px; }
+  .mc-jmp     { display: none; }  /* Juz jump row hidden, accessible via sidebar Page tab */
+  .mc-opts    { gap: 5px; flex-wrap: wrap; }
+  .mc-nav     { gap: 4px; }
+  .mc-page-inp { width: 50px; }
+  /* NOTE: .mp-page font-size is NOT overridden here — user controls it via A−/A+ buttons */
+  .mc-display { padding: 16px 10px; }
+  .mc-tip {
+    position: fixed;
+    bottom: calc(var(--player-h) + var(--mobnav-h) + 8px);
+    left: 10px; right: 10px;
+    max-width: none;
+    transform: none;
+  }
+
+  /* Sidebar touch overlay — shown when sidebar is open on mobile */
+  #sb-touch-ov {
+    display: none;
+  }
+
+  /* ── AI: simplified ── */
+  .ai-tabs    { gap: 2px; }
+  .ai-tab     { padding: 6px 9px; font-size: 11px; }
+  .ai-msgs    { max-height: 260px; }
+  .ai-hero    { padding: 16px 0 12px; }
+  .ai-hero h2 { font-size: 17px; }
+
+  /* ── CORPUS: simplified ── */
+  #stats-grid { grid-template-columns: repeat(2,1fr) !important; }
+
+  /* ── SETTINGS PANEL: full-width ── */
+  #settings-panel, #bm-panel {
+    width: 100%;
+    right: -100%;
+    border-left: none;
+    border-top: 1px solid var(--bd);
+  }
+  #settings-panel.open, #bm-panel.open { right: 0; }
+
+  /* ── CONTINUE CARD: compact ── */
+  #cc        { padding: 12px 14px; }
+  .cc-icon   { width: 36px; height: 36px; font-size: 16px; }
+  .cc-title  { font-size: 13.5px; }
+
+  /* VOD card compact */
+  .vod-card    { padding: 16px; }
+  .vod-ar      { font-size: 20px; }
+  .vod-tr      { font-size: 13px; }
+  .vod-actions { flex-direction: column; gap: 6px; }
+  .vod-btn     { justify-content: center; width: 100%; }
+
+  /* ── Mobile bottom nav: clear icons + labels ── */
+  #mob-nav     { height: 58px; }
+  .mnt         { font-size: 9.5px; gap: 2px; }
+  .mnt svg     { width: 19px; height: 19px; }
+}
+
+/* ═══════════════════════
+   SMALL MOBILE  ≤ 380px
+   Essential only
+═══════════════════════ */
+@media (max-width: 380px) {
+  .home-wrap, .ai-wrap, .corpus-wrap, .radio-wrap { padding: 10px 10px 80px; }
+  .pop-grid   { grid-template-columns: repeat(2,1fr); }
+  .stats-row  { grid-template-columns: repeat(3,1fr); gap: 4px; }
+  .stat-num   { font-size: 17px; }
+  .ch-ar      { font-size: 28px; }
+  .vod-ar     { font-size: 18px; }
+  .ai-hero h2 { font-size: 15px; }
+  .ai-tab     { padding: 5px 7px; font-size: 10.5px; }
+  .mnt span   { display: none; }  /* Icon only at very small widths */
+  #mob-nav    { height: 50px; }
+  .mnt svg    { width: 22px; height: 22px; }
+}
+
+/* ═══════════════════════
+   DESKTOP ≥ 1280px
+   Full features, max info density
+═══════════════════════ */
+@media (min-width: 1280px) {
+  .home-wrap, .ai-wrap, .corpus-wrap, .radio-wrap { padding: 32px 40px; }
+  .pop-grid   { grid-template-columns: repeat(4,1fr); }
+  .stats-row  { gap: 16px; }
+  .recg       { grid-template-columns: repeat(5,1fr); }
+  .verse      { padding: 26px 32px; }
+  .ch-hdr     { padding: 48px 32px 36px; }
+  .ch-ar      { font-size: 52px; }
+  /* Wider search on desktop */
+  .search-wrap input       { width: 240px; }
+  .search-wrap input:focus { width: 300px; }
+}
+
+/* ═══════════════════════
+   ULTRA-WIDE ≥ 1600px
+═══════════════════════ */
+@media (min-width: 1600px) {
+  :root { --content-max: 1020px; }
+  .verse      { padding: 28px 36px; }
+}
+
+/* ═══════════════════════
+   PRINT
+═══════════════════════ */
+@media print {
+  #sidebar, #topnav, #mob-nav, #player, #ann,
+  #fab-top, #toast, #pwa-toast, .v-acts,
+  .rtb, .ch-acts, .ch-nav, .pgn { display: none !important; }
+  .page { position: static !important; display: block !important; }
+  .verse { break-inside: avoid; page-break-inside: avoid; }
+  .v-ar  { color: #000 !important; font-size: 26px !important; }
+  .v-tr  { color: #222 !important; font-size: 13px !important; }
+  body   { background: #fff !important; color: #000 !important; }
+}
+
+/* ═══════════════════════
+   REDUCED MOTION
+═══════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration:       .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration:      .01ms !important;
+  }
+}
+
+/* ═══════════════════════
+   TOUCH DEVICES
+   Larger tap targets
+═══════════════════════ */
+@media (pointer: coarse) {
+  .va, .rtb-btn, .pgb, .ch-navbtn,
+  .sort-btn, .sz-btn, .th-opt,
+  .ai-tab, .ai-chip, .sb-tab,
+  .mc-btn, .mp-nav-btn { min-height: 40px; min-width: 36px; }
+
+  .sli  { padding: 11px 8px; }
+  .cg-row { padding: 12px 10px; }
+  .drop-row { padding: 12px; }
+
+  /* Increase word-by-word tap areas */
+  .ww   { min-width: 60px; padding: 8px 10px; }
+}
+
+/* ═══════════════════════
+   READER VERSE READING
+   Visual indicator for current verse
+═══════════════════════ */
+.verse.hi {
+  background: var(--em-dim) !important;
+  transition: background .5s;
+}
+
+/* ── Reciter grid on mobile: 2 cols ── */
+@media (max-width: 600px) {
+  .recg { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .rec-bio { display: none; }  /* Hide bio on mobile, show on desktop */
+  .rec-c { padding: 12px 8px 10px; }
+  .rec-av-circle { width: 48px; height: 48px; }
+  .rec-nm { font-size: 12px; }
+  .sq-grid { grid-template-columns: repeat(3, 1fr); gap: 6px; }
+}
+
+/* ── Center all content on mobile ── */
+@media (max-width: 960px) {
+  .home-wrap, .ai-wrap, .corpus-wrap, .radio-wrap {
+    padding: 16px 14px 80px;
+  }
+}
+@media (max-width: 600px) {
+  .home-wrap, .ai-wrap, .corpus-wrap, .radio-wrap {
+    padding: 12px 12px 80px;
+  }
+  /* VOD card: full focus */
+  .vod-card { border-radius: var(--r-lg); }
+  /* Notification: full bottom width on mobile */
+  /* notification top positioning handled in base.css */
+}
+
+/* ══════════════════════════════════════════════
+   RADIO / AUDIO PAGE MOBILE
+══════════════════════════════════════════════ */
+@media (max-width: 600px) {
+  .radio-wrap .page-hero { flex-direction: column; gap: 10px; }
+  .hero-actions { display: flex; gap: 8px; }
+  .hero-actions .btn-gold,
+  .hero-actions .btn-ghost { padding: 8px 14px; font-size: 13px; }
+  /* Surah list: simpler on mobile */
+  .surah-audio-list { border-radius: var(--r); }
+}
+
+/* ══════════════════════════════════════════════
+   DATE BADGE: show only Hijri on mobile
+   Separators are now inside date-greg/date-time so they hide together
+══════════════════════════════════════════════ */
+@media (max-width: 600px) {
+  .date-greg, .date-time, .date-sep { display: none; }
+  .hijri-badge { font-size: 11px; padding: 3px 8px; }
+}
+
+/* ══════════════════════════════════════════════
+   MUSHAF MOBILE: fullscreen button prominent
+══════════════════════════════════════════════ */
+@media (max-width: 600px) {
+  #mc-fs-btn { display: none; } /* native fullscreen hard on iOS, hide button */
+  .mc-jmp    { display: none; } /* hide juz bar - use sidebar */
+}
+
+/* ══════════════════════════════════════════════
+   HOME PAGE: minimal on small screens
+══════════════════════════════════════════════ */
+@media (max-width: 480px) {
+  .greeting-sub { display: none; }
+  .page-hero p  { font-size: 13px; }
+}
+
+/* ── Mobile: ensure all pages fill full screen width ── */
+@media (max-width: 960px) {
+  .page { width: 100%; }
+  .home-wrap, .ai-wrap, .corpus-wrap, .radio-wrap {
+    padding-left: 16px;
+    padding-right: 16px;
+    max-width: 100%;
+  }
+  /* Cards and grids should fill available width */
+  .vod-card, .cc, .stat-row, .cg-row { width: 100%; }
+  .pop-grid  { grid-template-columns: repeat(2, 1fr); width: 100%; }
+  .ai-card, .ai-wrap > * { max-width: 100%; }
+  .recg { width: 100%; }
+  .sal-row { width: 100%; }
+  /* Fix reader full width */
+  #pg-reader .ch-hdr,
+  #pg-reader #v-wrap,
+  #pg-reader .ch-nav,
+  #pg-reader #pgn { width: 100%; max-width: 100%; padding-left: 0; padding-right: 0; }
+}
+
+/* ═══════════════════════════════════════════════
+   FIX #17: Corpus mobile single-column layout
+   ═══════════════════════════════════════════════ */
+@media (max-width: 600px) {
+  .corpus-wrap { padding: 12px 10px; }
+
+  /* Root/morphology search: stack inputs */
+  .crp-top { flex-direction: column; gap: 8px; }
+  .crp-inp { width: 100% !important; font-size: 16px; /* prevent iOS zoom */ }
+
+  /* Results: full width stacked */
+  .crp-split { flex-direction: column; gap: 0; }
+  .crp-left, .crp-right {
+    width: 100% !important;
+    min-width: 0 !important;
+    border-right: none !important;
+    border-bottom: 1px solid var(--bd);
+  }
+
+  /* Concordance table: scrollable */
+  .conc-table { display: block; overflow-x: auto; font-size: 11px; }
+  .conc-table th, .conc-table td { padding: 6px 8px; white-space: nowrap; }
+
+  /* Buttons: wrap */
+  .crp-acts { flex-wrap: wrap; gap: 6px; }
+  .crp-btn  { font-size: 12px; padding: 6px 10px; }
+}
+
+/* ═══════════════════════════════════════════════
+   FIX #18: Radio — continuous play playlist panel
+   ═══════════════════════════════════════════════ */
+.radio-playlist {
+  background: var(--sf);
+  border: 1px solid var(--bd);
+  border-radius: var(--r);
+  padding: 14px;
+  margin-bottom: 16px;
+}
+.radio-playlist h3 { font-size: 13px; font-weight: 700; color: var(--t1); margin-bottom: 10px; }
+.playlist-presets  { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+.playlist-preset {
+  padding: 5px 12px;
+  background: var(--bg2);
+  border: 1px solid var(--bd);
+  border-radius: 99px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--t2);
+  cursor: pointer;
+  transition: border-color .15s, color .15s;
+}
+.playlist-preset:hover, .playlist-preset.active {
+  border-color: var(--em);
+  color: var(--em3);
+  background: var(--em-dim);
+}
+.playlist-now {
+  font-size: 12px;
+  color: var(--t3);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.playlist-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--em2);
+  animation: softPulse 1.5s infinite;
+}
+@keyframes softPulse {
+  0%,100% { opacity:1; transform:scale(1); }
+  50%      { opacity:.5; transform:scale(.8); }
+}

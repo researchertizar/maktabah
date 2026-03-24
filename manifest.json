@@ -1,0 +1,91 @@
+{
+  "name": "Maktabah — The Noble Quran",
+  "short_name": "Maktabah",
+  "description": "Read, listen and study the Noble Quran. Free forever.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": [
+    "standalone",
+    "minimal-ui",
+    "browser"
+  ],
+  "orientation": "portrait-primary",
+  "background_color": "#f5f8f6",
+  "theme_color": "#1a6b41",
+  "categories": [
+    "education",
+    "religion",
+    "books"
+  ],
+  "lang": "en",
+  "dir": "auto",
+  "id": "maktabah-quran-app",
+  "launch_handler": {
+    "client_mode": "navigate-existing"
+  },
+  "edge_side_panel": {
+    "preferred_width": 400
+  },
+  "icons": [
+    {
+      "src": "assets/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    },
+    {
+      "src": "assets/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "Continue Reading",
+      "short_name": "Read",
+      "url": "./#reader",
+      "description": "Continue where you left off"
+    },
+    {
+      "name": "Mushaf",
+      "short_name": "Mushaf",
+      "url": "./#mushaf",
+      "description": "Traditional page view"
+    },
+    {
+      "name": "Morning Adhkar",
+      "short_name": "Adhkar",
+      "url": "./#dhikr/morning",
+      "description": "Morning remembrances"
+    },
+    {
+      "name": "AI Tools",
+      "short_name": "AI",
+      "url": "./#ai",
+      "description": "Ask Tarteel AI"
+    }
+  ],
+  "prefer_related_applications": false,
+  "handle_links": "preferred"
+}

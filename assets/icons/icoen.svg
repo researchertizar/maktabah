@@ -1,0 +1,38 @@
+<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg-grad" x1="0" y1="0" x2="512" y2="512" gradientUnits="userSpaceOnUse">
+      <stop offset="0%"   stop-color="#1a4731"/>
+      <stop offset="55%"  stop-color="#2d8653"/>
+      <stop offset="100%" stop-color="#c8a04a"/>
+    </linearGradient>
+    <linearGradient id="corner-grad" x1="340" y1="340" x2="512" y2="512" gradientUnits="userSpaceOnUse">
+      <stop offset="0%"   stop-color="#c8a04a" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#e8c97a" stop-opacity="0.8"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="512" height="512" rx="112" fill="url(#bg-grad)"/>
+
+  <!-- Subtle inner glow -->
+  <rect width="512" height="512" rx="112" fill="url(#corner-grad)" opacity="0.4"/>
+
+  <!-- Gold corner accent -->
+  <polygon points="340,512 512,512 512,340" fill="#c8a04a" opacity="0.5"/>
+
+  <!-- Arabic letter Meem (م) — calligraphic -->
+  <text
+    x="256"
+    y="320"
+    font-family="'Scheherazade New', 'Noto Naskh Arabic', serif"
+    font-size="300"
+    font-weight="400"
+    fill="white"
+    opacity="0.95"
+    text-anchor="middle"
+    dominant-baseline="middle"
+  >م</text>
+
+  <!-- Subtle underline accent -->
+  <rect x="128" y="370" width="256" height="3" rx="2" fill="#c8a04a" opacity="0.6"/>
+</svg>

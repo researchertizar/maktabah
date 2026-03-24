@@ -1,0 +1,231 @@
+/* ═══════════════════════════════════════════════
+   css/tokens.css — Design System Tokens v4
+   4 professional themes with strong contrast
+   ═══════════════════════════════════════════════ */
+
+/* ── DARK (default) — Deep Forest Emerald ── */
+:root,
+[data-theme="dark"] {
+  --bg:        #0d1a12;
+  --bg2:       #111f17;
+  --bg3:       #16281d;
+  --bg4:       #1c3224;
+  --sf:        #182b1f;
+  --sf2:       #1e3326;
+  --sf3:       #263d2e;
+
+  --em:        #2d8653;
+  --em2:       #38a869;
+  --em3:       #52c78a;
+  --em-dim:    rgba(45,134,83,.15);
+  --em-glow:   rgba(45,134,83,.32);
+
+  --gd:        #c8a04a;
+  --gd2:       #e8c97a;
+  --gd3:       #f5e0a0;
+  --gd-dim:    rgba(200,160,74,.13);
+
+  --t1:        #eef4ef;
+  --t2:        #a8c0b0;
+  --t3:        #668076;
+  --t4:        #3a5544;
+
+  --red:       #e05252;
+  --red-dim:   rgba(224,82,82,.14);
+  --green:     #4caf7a;
+  --blue:      #5b8dee;
+  --orange:    #e8874c;
+
+  --bd:        rgba(255,255,255,.08);
+  --bd2:       rgba(255,255,255,.14);
+  --sh:        0 2px 12px rgba(0,0,0,.4);
+  --sh2:       0 4px 24px rgba(0,0,0,.5);
+  --sh3:       0 8px 48px rgba(0,0,0,.65);
+  --meta-color:#111f17;
+}
+
+/* ── HIGH CONTRAST — Pure black, neon green, stark whites ── */
+[data-theme="dark-hc"] {
+  --bg:        #000000;
+  --bg2:       #050505;
+  --bg3:       #0a0a0a;
+  --bg4:       #111111;
+  --sf:        #0a0a0a;
+  --sf2:       #111111;
+  --sf3:       #181818;
+
+  /* Bright vivid accent — clearly different from dark */
+  --em:        #00e676;
+  --em2:       #69f0ae;
+  --em3:       #b9f6ca;
+  --em-dim:    rgba(0,230,118,.2);
+  --em-glow:   rgba(0,230,118,.5);
+
+  --gd:        #ffd600;
+  --gd2:       #ffea00;
+  --gd3:       #fff59d;
+  --gd-dim:    rgba(255,214,0,.2);
+
+  /* High contrast text — pure white / light gray only */
+  --t1:        #ffffff;
+  --t2:        #eeeeee;
+  --t3:        #bdbdbd;
+  --t4:        #757575;
+
+  --red:       #ff1744;
+  --red-dim:   rgba(255,23,68,.2);
+  --green:     #00e676;
+  --blue:      #40c4ff;
+  --orange:    #ff9100;
+
+  /* Strong visible borders */
+  --bd:        rgba(255,255,255,.25);
+  --bd2:       rgba(255,255,255,.45);
+  --sh:        0 2px 12px rgba(0,0,0,.8);
+  --sh2:       0 4px 24px rgba(0,0,0,.9);
+  --sh3:       0 8px 48px rgba(0,0,0,1);
+  --meta-color:#000000;
+}
+
+/* Extra HC overrides: force full contrast on all text */
+[data-theme="dark-hc"] body,
+[data-theme="dark-hc"] .verse,
+[data-theme="dark-hc"] .sli,
+[data-theme="dark-hc"] .sb-link { color: #ffffff; }
+
+[data-theme="dark-hc"] .v-tr,
+[data-theme="dark-hc"] .sli-meta,
+[data-theme="dark-hc"] .sli-name { color: #eeeeee; }
+
+[data-theme="dark-hc"] .v-ar,
+[data-theme="dark-hc"] .vod-ar   { color: #ffffff; }
+
+[data-theme="dark-hc"] #sidebar,
+[data-theme="dark-hc"] #topnav,
+[data-theme="dark-hc"] .verse    { border-color: rgba(255,255,255,.3); }
+
+[data-theme="dark-hc"] .rtb-btn,
+[data-theme="dark-hc"] .va,
+[data-theme="dark-hc"] .pgb      {
+  border: 1px solid rgba(255,255,255,.4) !important;
+  color: #ffffff !important;
+}
+
+/* ── LIGHT — Clean White ── */
+[data-theme="light"] {
+  --bg:        #f0f5f2;
+  --bg2:       #e6ede9;
+  --bg3:       #dce7e0;
+  --bg4:       #cfddd4;
+  --sf:        #ffffff;
+  --sf2:       #f5faf7;
+  --sf3:       #eaf3ed;
+
+  --em:        #1a6b41;
+  --em2:       #2d8653;
+  --em3:       #3aad6a;
+  --em-dim:    rgba(26,107,65,.1);
+  --em-glow:   rgba(26,107,65,.25);
+
+  --gd:        #9a6e00;
+  --gd2:       #b88a10;
+  --gd3:       #d4a830;
+  --gd-dim:    rgba(154,110,0,.12);
+
+  --t1:        #0a1a10;
+  --t2:        #1e3828;
+  --t3:        #3a5e48;
+  --t4:        #6a8e78;
+
+  --red:       #cc2200;
+  --red-dim:   rgba(204,34,0,.1);
+  --green:     #1a8040;
+  --blue:      #1a55cc;
+  --orange:    #cc6000;
+
+  /* Stronger borders for cut-outs in light mode */
+  --bd:        rgba(0,0,0,.13);
+  --bd2:       rgba(0,0,0,.22);
+  --sh:        0 1px 4px rgba(0,0,0,.06), 0 4px 16px rgba(0,0,0,.08);
+  --sh2:       0 2px 8px rgba(0,0,0,.08), 0 8px 32px rgba(0,0,0,.12);
+  --sh3:       0 4px 16px rgba(0,0,0,.10), 0 16px 48px rgba(0,0,0,.18);
+  --meta-color:#1a6b41;
+}
+
+/* Light theme: glass-card effect on key surfaces */
+[data-theme="light"] .verse,
+[data-theme="light"] .adhkar-card,
+[data-theme="light"] .ai-card,
+[data-theme="light"] .vod-card,
+[data-theme="light"] .stat-card,
+[data-theme="light"] .pop-card,
+[data-theme="light"] .tasbih-section,
+[data-theme="light"] .adhkar-cat-card {
+  background: #ffffff;
+  border: 1px solid rgba(0,0,0,.12);
+  box-shadow: 0 1px 4px rgba(0,0,0,.05), 0 4px 16px rgba(0,0,0,.07);
+}
+
+[data-theme="light"] #sidebar,
+[data-theme="light"] #topnav,
+[data-theme="light"] #mob-nav {
+  background: #ffffff;
+  border-color: rgba(0,0,0,.12);
+  box-shadow: 0 1px 8px rgba(0,0,0,.08);
+}
+
+[data-theme="light"] .sli:hover,
+[data-theme="light"] .cg-row:hover {
+  background: #f0faf4;
+}
+
+[data-theme="light"] #sidebar {
+  border-right: 1.5px solid rgba(0,0,0,.1);
+}
+
+/* ── TYPOGRAPHY ── */
+:root {
+  --font-ui:   'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-ar:   'Scheherazade New', 'Noto Naskh Arabic', serif;
+  --text-xs:   11px;
+  --text-sm:   12.5px;
+  --text-base: 14px;
+  --text-md:   15px;
+  --text-lg:   17px;
+  --text-xl:   20px;
+  --text-2xl:  24px;
+  --ar-verse:  34px;
+}
+
+/* ── SPACING ── */
+:root {
+  --space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px;
+  --space-5:20px; --space-6:24px; --space-8:32px; --space-10:40px;
+}
+
+/* ── RADIUS ── */
+:root { --r-sm:7px; --r:12px; --r-md:14px; --r-lg:20px; --r-full:9999px; }
+
+/* ── LAYOUT ── */
+:root {
+  --sidebar-w:  264px;
+  --topnav-h:   58px;
+  --mobnav-h:   62px;
+  --player-h:   90px;
+  --ann-h:      42px;
+  --content-max:880px;
+  --vh:         1vh;
+}
+
+/* ── TRANSITIONS ── */
+:root { --trans:.18s ease; --trans-slow:.3s cubic-bezier(.4,0,.2,1); }
+
+/* ── TAJWEED ── */
+:root {
+  --tj-ghunna:   #4caf7a;
+  --tj-idghaam:  #5b8dee;
+  --tj-ikhfa:    #e8c97a;
+  --tj-qalqalah: #e05252;
+  --tj-madd:     #9b6ee8;
+  --tj-hamza:    #e8874c;
+}

@@ -1,0 +1,33 @@
+{
+  "name": "maktabah-backend",
+  "version": "1.0.0",
+  "description": "Maktabah Quran Platform Backend API (AI Proxy + Auth)",
+  "main": "api/server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node api/server.js",
+    "dev": "nodemon api/server.js"
+  },
+  "keywords": [
+    "maktabah",
+    "quran",
+    "api",
+    "ai",
+    "express"
+  ],
+  "author": "Ahayas",
+  "license": "AYRA",
+  "dependencies": {
+    "@sentry/node": "^10.45.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "express-rate-limit": "^7.0.0",
+    "helmet": "^7.2.0",
+    "jsonwebtoken": "^9.0.2",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.3"
+  }
+}

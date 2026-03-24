@@ -1,0 +1,1731 @@
+/* ═══════════════════════════════════════════════
+   css/player.css — Audio Player Bar v5 (Production)
+
+   ARCHITECTURE (based on screenshot analysis):
+   ┌─────────────────────────────────────────────┐
+   │ ROW 1:  [MA][Al-Baqarah/Ayah] [◀◀|◀|▶|▶|▶▶] [⚙opts] │
+   │ ROW 2:  0:02 ▓▓▓▓▓░░░░░░░░░░░░░░░░░░░░░░░ 0:74  │
+   └─────────────────────────────────────────────┘
+
+   PROBLEMS FIXED FROM SCREENSHOT:
+   · Controls NOT centered — they drift right with all opts
+   · Options (skip,shuffle,repeat,speed,1x,∨) are too crowded
+   · Grid 3-col causes track to get too little space on mobile
+   · "MA" art box correct size but info text gets squeezed
+   · All icons bunched on right side
+
+   SOLUTION:
+   · Use a proper 3-area layout: track(flex-1) | controls(fixed-center) | opts(auto)
+   · On mobile ≤600px: COLLAPSE to single flex row with clear priority
+   · Play button always the clear visual center/anchor
+   ═══════════════════════════════════════════════ */
+
+/* ──────────────────────────────────
+   SHELL
+────────────────────────────────── */
+#player {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 600;
+  background: var(--bg2);
+  border-top: 1px solid var(--bd2);
+  box-shadow: 0 -2px 20px rgba(0, 0, 0, .32);
+  transform: translateY(100%);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform .28s cubic-bezier(.4, 0, .2, 1), opacity .22s ease;
+  will-change: transform;
+  display: flex;
+  flex-direction: column;
+  padding: 0 0 env(safe-area-inset-bottom, 0);
+  width: 100%;
+  max-width: 100%;
+  overflow: visible;
+  /* pl-dismiss sits at top:-18px and must not be clipped */
+  box-sizing: border-box;
+}
+
+#player.open {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Sits above bottom nav on mobile */
+@media (max-width: 960px) {
+  #player {
+    bottom: var(--mobnav-h, 62px);
+  }
+}
+
+/* ──────────────────────────────────
+   DRAG HANDLE
+────────────────────────────────── */
+.pl-dismiss {
+  position: absolute;
+  top: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 44px;
+  height: 18px;
+  background: var(--bg2);
+  border: 1px solid var(--bd2);
+  border-bottom: none;
+  border-radius: 10px 10px 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--t4);
+  cursor: pointer;
+  transition: color var(--trans), background var(--trans);
+}
+
+.pl-dismiss:hover {
+  color: var(--t2);
+  background: var(--sf);
+}
+
+/* ══════════════════════════════════
+   ROW 1 — the main control row
+   Layout: [track] [controls] [opts]
+   
+   KEY FIX: use flex with explicit
+   flex-basis instead of grid, so track
+   gets exactly the right amount of space
+   and controls sit dead center.
+══════════════════════════════════ */
+.pl-row1 {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 8px 12px 3px;
+  gap: 0;
+  box-sizing: border-box;
+  overflow: visible;
+  /* keep pl-dismiss visible — clip only via pl-track/inner divs */
+}
+
+/* ── Track: takes leftover space ── */
+.pl-track {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1 1 0;
+  /* grow to fill, shrink if needed */
+  min-width: 0;
+  /* CRITICAL for text-overflow ellipsis */
+  overflow: hidden;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  padding: 3px 4px;
+  border-radius: var(--r-sm);
+  transition: background var(--trans);
+}
+
+.pl-track:hover {
+  background: var(--sf);
+}
+
+.pl-art {
+  width: 34px;
+  height: 34px;
+  background: var(--em-dim);
+  border: 1.5px solid var(--em-glow);
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--em3);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+
+.pl-art.playing {
+  background: var(--em-dim);
+  border-color: var(--em2);
+  color: var(--em3);
+}
+
+.pl-info {
+  min-width: 0;
+  /* CRITICAL */
+  flex: 1;
+}
+
+.pl-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--t1);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.3;
+}
+
+.pl-sub {
+  font-size: 11px;
+  color: var(--em3);
+  margin-top: 1px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── Controls: fixed width, centered ── */
+.pl-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  flex-shrink: 0;
+  /* Fixed width so it doesn't compete with track or opts */
+  width: auto;
+  padding: 0 6px;
+}
+
+/* Base button */
+.pl-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: var(--t2);
+  transition: background var(--trans), color var(--trans), transform .12s;
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  /* Invisible touch padding */
+  position: relative;
+}
+
+.pl-btn::before {
+  content: "";
+  position: absolute;
+  inset: -7px;
+  border-radius: 50%;
+}
+
+.pl-btn:active {
+  transform: scale(.86);
+}
+
+/* Step ayah — smallest, de-emphasized */
+.pl-btn-ayah {
+  width: 28px;
+  height: 28px;
+  color: var(--t3);
+  opacity: 0.65;
+}
+
+.pl-btn-ayah:hover {
+  background: var(--sf);
+  color: var(--t1);
+  opacity: 1;
+}
+
+.pl-btn-ayah:disabled {
+  opacity: .2;
+  pointer-events: none;
+}
+
+/* Surah skip — medium */
+.pl-btn-skip {
+  width: 30px;
+  height: 30px;
+  color: var(--t2);
+}
+
+.pl-btn-skip:hover {
+  background: var(--sf);
+  color: var(--t1);
+}
+
+/* Play/Pause — the undisputed center, largest */
+.pl-btn-play {
+  width: 44px;
+  height: 44px;
+  background: var(--em);
+  color: #fff !important;
+  margin: 0 5px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, .28);
+  border-radius: 50%;
+  transition: background var(--trans), transform .12s, box-shadow var(--trans);
+}
+
+.pl-btn-play:hover {
+  background: var(--em2);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, .35);
+}
+
+.pl-btn-play:active {
+  transform: scale(.88);
+}
+
+/* ── Options: right-aligned, de-weighted ── */
+.pl-opts {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 1px;
+  flex-shrink: 0;
+  /* Subtle reduction — opts are secondary */
+  opacity: 0.8;
+}
+
+.pl-opt-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--t4);
+  transition: color var(--trans), background var(--trans);
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  position: relative;
+}
+
+.pl-opt-btn::before {
+  content: "";
+  position: absolute;
+  inset: -5px;
+  border-radius: 8px;
+}
+
+.pl-opt-btn:hover {
+  color: var(--t2);
+  background: var(--sf);
+}
+
+.pl-opt-btn.on,
+.pl-opt-btn[aria-pressed="true"] {
+  color: var(--em3);
+  background: var(--em-dim);
+}
+
+/* Speed selector */
+.pl-spd {
+  background: var(--sf);
+  border: 1px solid var(--bd);
+  border-radius: 6px;
+  padding: 3px 5px;
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--t2);
+  cursor: pointer;
+  outline: none;
+  flex-shrink: 0;
+  transition: border-color var(--trans);
+}
+
+.pl-spd:focus {
+  border-color: var(--em2);
+}
+
+/* Volume */
+.pl-vol-wrap {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--t4);
+  flex-shrink: 0;
+}
+
+.pl-vol {
+  width: 64px;
+  height: 4px;
+  appearance: none;
+  background: var(--sf2);
+  border-radius: 2px;
+  cursor: pointer;
+  outline: none;
+  accent-color: var(--em2);
+}
+
+.pl-vol::-webkit-slider-thumb {
+  appearance: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--em2);
+  cursor: pointer;
+  border: 2px solid var(--bg2);
+  box-shadow: 0 0 0 1px var(--em-glow);
+}
+
+.pl-vol::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--em2);
+  cursor: pointer;
+  border: 2px solid var(--bg2);
+}
+
+/* ══════════════════════════════════
+   ROW 2 — time | seeker | time
+══════════════════════════════════ */
+.pl-row2 {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 1px 14px 8px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.pl-time {
+  font-size: 10px;
+  color: var(--t4);
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+  min-width: 30px;
+  line-height: 1;
+}
+
+#pl-tot {
+  text-align: right;
+}
+
+/* Progress wrap — click/drag target larger than visual bar */
+.pl-progress-wrap {
+  flex: 1;
+  padding: 6px 0;
+  cursor: pointer;
+  min-width: 0;
+}
+
+.pl-progress {
+  position: relative;
+  height: 5px;
+  background: var(--sf2);
+  border-radius: 99px;
+  overflow: visible;
+  cursor: pointer;
+  touch-action: none;
+  transition: height .15s;
+}
+
+.pl-progress:hover,
+.pl-progress:focus {
+  height: 7px;
+  outline: none;
+}
+
+.pl-progress:focus-visible {
+  box-shadow: 0 0 0 2px var(--em2);
+  border-radius: 99px;
+}
+
+/* Fill */
+.pl-fill {
+  height: 100%;
+  background: var(--em2);
+  border-radius: 99px;
+  width: 0;
+  pointer-events: none;
+  transition: width .08s linear;
+}
+
+/* Thumb — appears on hover/drag */
+.pl-thumb {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translate(-50%, -50%) scale(0);
+  width: 14px;
+  height: 14px;
+  background: var(--em3);
+  border: 2px solid var(--bg2);
+  border-radius: 50%;
+  pointer-events: none;
+  transition: left .08s linear, transform .15s;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, .4);
+}
+
+.pl-progress:hover .pl-thumb,
+.pl-progress:focus .pl-thumb,
+.pl-progress.dragging .pl-thumb {
+  transform: translate(-50%, -50%) scale(1);
+}
+
+/* Verse tick marks */
+.pl-verse-dot {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 2px;
+  height: 8px;
+  background: var(--bd2);
+  border-radius: 1px;
+  cursor: pointer;
+  z-index: 2;
+  transition: background .12s, height .12s;
+}
+
+.pl-verse-dot:hover {
+  background: var(--gd);
+  height: 12px;
+}
+
+.pl-verse-dot.active {
+  background: var(--gd);
+  height: 10px;
+}
+
+.pl-verse-dot::after {
+  content: attr(title);
+  position: absolute;
+  bottom: calc(100% + 5px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--sf);
+  border: 1px solid var(--bd2);
+  color: var(--t2);
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 5px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .12s;
+  font-family: var(--font-ui);
+  z-index: 100;
+}
+
+.pl-verse-dot:hover::after {
+  opacity: 1;
+}
+
+/* ══════════════════════════════════
+   NOW-PLAYING verse highlight
+══════════════════════════════════ */
+.verse.playing-v {
+  background: var(--em-dim) !important;
+  border-left: 3px solid var(--em2) !important;
+}
+
+@keyframes vNumPulse {
+  0% {
+    color: var(--gd);
+    transform: scale(1.3);
+  }
+
+  100% {
+    color: inherit;
+    transform: scale(1);
+  }
+}
+
+.v-num.playing-pulse {
+  animation: vNumPulse .6s ease-out;
+}
+
+/* ══════════════════════════════════
+   THEME: LIGHT
+══════════════════════════════════ */
+[data-theme="light"] #player {
+  background: var(--sf);
+  border-top-color: var(--bd);
+  box-shadow: 0 -2px 12px rgba(0, 0, 0, .1);
+}
+
+[data-theme="light"] .pl-dismiss {
+  background: var(--sf);
+  border-color: var(--bd);
+}
+
+[data-theme="light"] .pl-art {
+  background: var(--sf2);
+  border-color: var(--bd);
+}
+
+[data-theme="light"] .pl-progress {
+  background: var(--bg3);
+}
+
+[data-theme="light"] .pl-fill {
+  background: var(--em2);
+}
+
+[data-theme="light"] .pl-thumb {
+  background: var(--em);
+  border-color: var(--sf);
+}
+
+[data-theme="light"] .pl-verse-dot {
+  background: var(--bd2);
+}
+
+[data-theme="light"] .pl-spd {
+  background: var(--sf2);
+  border-color: var(--bd);
+}
+
+[data-theme="light"] .pl-vol {
+  background: var(--bg3);
+}
+
+[data-theme="light"] .pl-btn-play {
+  background: var(--em);
+  box-shadow: 0 2px 10px rgba(26, 107, 65, .3);
+}
+
+[data-theme="light"] .pl-btn-play:hover {
+  background: var(--em2);
+}
+
+/* ══════════════════════════════════
+   THEME: DARK HIGH CONTRAST
+══════════════════════════════════ */
+[data-theme="dark-hc"] #player {
+  background: #050505;
+  border-top-color: rgba(255, 255, 255, .3);
+  box-shadow: 0 -2px 24px rgba(0, 0, 0, .9);
+}
+
+[data-theme="dark-hc"] .pl-fill {
+  background: var(--em2);
+}
+
+[data-theme="dark-hc"] .pl-thumb {
+  background: var(--gd);
+  border-color: #000;
+}
+
+[data-theme="dark-hc"] .pl-btn-play {
+  background: var(--em);
+}
+
+[data-theme="dark-hc"] .pl-verse-dot {
+  background: rgba(255, 255, 255, .3);
+}
+
+/* ══════════════════════════════════════════════════════
+   RESPONSIVE — Strategy: remove > rebalance > simplify
+   as width shrinks. Never just squish.
+══════════════════════════════════════════════════════ */
+
+/* ── Large desktop ≥1280px ── */
+@media (min-width: 1280px) {
+  .pl-row1 {
+    padding: 9px 24px 3px;
+  }
+
+  .pl-row2 {
+    padding: 1px 24px 10px;
+    gap: 10px;
+  }
+
+  .pl-vol {
+    width: 80px;
+  }
+
+  .pl-opts {
+    gap: 4px;
+    opacity: 1;
+  }
+
+  .pl-opt-btn {
+    width: 30px;
+    height: 30px;
+    opacity: 1;
+  }
+
+  .pl-controls {
+    padding: 0 12px;
+    gap: 2px;
+  }
+}
+
+/* ── Tablet 768–1279px ── */
+@media (min-width: 768px) and (max-width: 1279px) {
+  .pl-row1 {
+    padding: 8px 18px 3px;
+  }
+
+  .pl-row2 {
+    padding: 1px 18px 9px;
+  }
+
+  .pl-controls {
+    padding: 0 8px;
+  }
+}
+
+/* ── Small tablet / large phone 601–767px ── */
+@media (min-width: 601px) and (max-width: 767px) {
+  .pl-row1 {
+    padding: 7px 12px 3px;
+  }
+
+  .pl-row2 {
+    padding: 1px 12px 7px;
+  }
+
+  .pl-vol-wrap {
+    display: none;
+  }
+
+  .pl-opts {
+    gap: 1px;
+  }
+
+  .pl-controls {
+    padding: 0 4px;
+  }
+}
+
+/* ══════════════════════════════════
+   MOBILE ≤600px  ← THE MAIN FIX
+   
+   From screenshot: all controls bunched
+   right because opts stole too much space.
+   
+   FIX: explicit column widths using flex
+   so track always gets minimum 120px,
+   controls are always centered, opts
+   are compact on the right.
+══════════════════════════════════ */
+@media (max-width: 600px) {
+  .pl-row1 {
+    padding: 7px 10px 2px;
+    gap: 0;
+  }
+
+  /* Track gets min 120px, can shrink but not below that */
+  .pl-track {
+    flex: 1 1 120px;
+    min-width: 0;
+    padding: 2px 4px 2px 0;
+    gap: 7px;
+  }
+
+  .pl-art {
+    width: 30px;
+    height: 30px;
+    border-radius: 7px;
+    font-size: 10px;
+    flex-shrink: 0;
+  }
+
+  .pl-title {
+    font-size: 12.5px;
+  }
+
+  .pl-sub {
+    font-size: 10.5px;
+  }
+
+  /* Controls: fixed — never shrink */
+  .pl-controls {
+    flex: 0 0 auto;
+    gap: 0;
+    padding: 0 4px;
+  }
+
+  .pl-btn-play {
+    width: 40px;
+    height: 40px;
+    margin: 0 4px;
+  }
+
+  .pl-btn-skip {
+    width: 28px;
+    height: 28px;
+  }
+
+  /* Hide the ayah step buttons — reclaim space */
+  .pl-btn-ayah {
+    display: none;
+  }
+
+  /* Options: compact, only the essentials */
+  .pl-opts {
+    flex: 0 0 auto;
+    gap: 1px;
+    opacity: 0.8;
+    padding-left: 2px;
+  }
+
+  /* Hide volume on mobile — use system volume */
+  .pl-vol-wrap {
+    display: none;
+  }
+
+  .pl-opt-btn {
+    width: 26px;
+    height: 26px;
+  }
+
+  /* Speed selector: tighter on mobile */
+  .pl-spd {
+    padding: 2px 4px;
+    font-size: 10px;
+  }
+
+  .pl-row2 {
+    padding: 1px 10px 7px;
+    gap: 5px;
+  }
+
+  .pl-time {
+    font-size: 9.5px;
+    min-width: 28px;
+  }
+}
+
+/* ══════════════════════════════════
+   VERY SMALL PHONES ≤360px
+   320px (Android Go) → 360px (iPhone SE)
+   
+   Ruthless simplification:
+   [art+title] [play] [skip]
+   No options row shown.
+══════════════════════════════════ */
+@media (max-width: 360px) {
+  .pl-row1 {
+    padding: 6px 8px 2px;
+  }
+
+  .pl-track {
+    flex: 1 1 100px;
+    gap: 6px;
+  }
+
+  .pl-art {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    font-size: 9px;
+  }
+
+  .pl-title {
+    font-size: 12px;
+  }
+
+  .pl-sub {
+    font-size: 10px;
+  }
+
+  .pl-btn-play {
+    width: 36px;
+    height: 36px;
+    margin: 0 3px;
+  }
+
+  .pl-btn-skip {
+    width: 26px;
+    height: 26px;
+  }
+
+  /* Hide everything secondary */
+  .pl-btn-ayah {
+    display: none;
+  }
+
+  .pl-opts {
+    display: none;
+  }
+
+  .pl-vol-wrap {
+    display: none;
+  }
+
+  .pl-controls {
+    padding: 0 2px;
+  }
+
+  .pl-row2 {
+    padding: 1px 8px 6px;
+    gap: 4px;
+  }
+
+  .pl-time {
+    font-size: 9px;
+    min-width: 24px;
+  }
+}
+
+/* ══════════════════════════════════
+   RADIO PAGE — reciter cards
+══════════════════════════════════ */
+/* ── Radio page ── */
+.radio-tools {
+  margin-bottom: 20px;
+}
+
+.rt-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.rt-lbl {
+  font-size: 12px;
+  color: var(--t3);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.rt-btns {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.recg {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 10px;
+}
+
+.rec-c {
+  text-align: center;
+  padding: 14px 10px;
+  background: var(--sf);
+  border: 1px solid var(--bd);
+  border-radius: var(--r);
+  cursor: pointer;
+  transition: all var(--trans);
+}
+
+.rec-c:hover {
+  border-color: var(--em);
+  background: var(--sf2);
+}
+
+.rec-c.sel {
+  border-color: var(--em);
+  background: var(--em-dim);
+}
+
+.rec-av {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  margin: 0 auto 8px;
+  overflow: hidden;
+  background: var(--bg3);
+}
+
+.rec-av img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.rec-nm {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--t1);
+}
+
+.rec-st {
+  font-size: 10px;
+  color: var(--t3);
+  margin-top: 2px;
+}
+
+.radio-g {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+}
+
+.rc {
+  background: var(--sf);
+  border: 1px solid var(--bd);
+  border-radius: var(--r);
+  cursor: pointer;
+  overflow: hidden;
+  transition: all var(--trans);
+}
+
+.rc:hover {
+  border-color: var(--em);
+  transform: translateY(-2px);
+  box-shadow: var(--sh);
+}
+
+.rc-img {
+  height: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--sf2), var(--sf3));
+}
+
+.rc-body {
+  padding: 12px 14px;
+}
+
+.rc-body h3 {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--t1);
+  margin-bottom: 2px;
+}
+
+.rc-body p {
+  font-size: 11px;
+  color: var(--t3);
+}
+
+/* ══════════════════════════════════════════════
+   RECITER CARDS — radio.js
+══════════════════════════════════════════════ */
+.recg {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+.rec-c {
+  background: var(--sf);
+  border: 1.5px solid var(--bd);
+  border-radius: var(--r-md);
+  padding: 18px 14px 14px;
+  cursor: pointer;
+  transition: border-color .18s, background .18s, transform .18s, box-shadow .18s;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.rec-c:hover {
+  border-color: var(--em);
+  background: var(--sf2);
+  transform: translateY(-3px);
+  box-shadow: var(--sh2);
+}
+.rec-c.sel {
+  border-color: var(--em2);
+  background: var(--em-dim);
+  box-shadow: 0 0 0 3px var(--em-glow);
+}
+.rec-av-wrap {
+  position: relative;
+  display: inline-block;
+  margin-bottom: 10px;
+}
+.rec-av-circle {
+  width: 60px; height: 60px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto;
+  transition: border-color .18s;
+}
+.rec-playing-dot {
+  position: absolute;
+  bottom: 2px; right: 2px;
+  width: 14px; height: 14px;
+  background: var(--em2);
+  border-radius: 50%;
+  border: 2px solid var(--sf);
+  animation: softPulse 1.5s infinite;
+}
+.rec-flag {
+  font-size: 18px;
+  margin-bottom: 5px;
+  line-height: 1;
+}
+.rec-nm {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--t1);
+  margin-bottom: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.rec-st {
+  font-size: 11px;
+  color: var(--em2);
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+.rec-bio {
+  font-size: 11px;
+  color: var(--t3);
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Surah quick-play grid */
+.sq-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.sq-card {
+  background: var(--sf);
+  border: 1px solid var(--bd);
+  border-radius: var(--r);
+  padding: 10px 8px;
+  cursor: pointer;
+  transition: border-color .15s, background .15s, transform .15s;
+  text-align: center;
+}
+
+.sq-card:hover {
+  border-color: var(--em);
+  background: var(--sf2);
+  transform: translateY(-2px);
+}
+
+.sq-num {
+  font-size: 10px;
+  color: var(--t4);
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+
+.sq-name {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--t1);
+}
+
+.sq-ar {
+  font-family: var(--font-ar);
+  font-size: 16px;
+  color: var(--gd);
+  line-height: 1.8;
+}
+
+/* ══════════════════════════════════
+   MUSHAF PAGE-TURN ANIMATIONS
+══════════════════════════════════ */
+@keyframes pageExitLeft {
+  from {
+    opacity: 1;
+    transform: translateX(0) rotateY(0)
+  }
+
+  to {
+    opacity: 0;
+    transform: translateX(-40px) rotateY(8deg)
+  }
+}
+
+@keyframes pageExitRight {
+  from {
+    opacity: 1;
+    transform: translateX(0) rotateY(0)
+  }
+
+  to {
+    opacity: 0;
+    transform: translateX(40px) rotateY(-8deg)
+  }
+}
+
+@keyframes pageEnterRight {
+  from {
+    opacity: 0;
+    transform: translateX(40px) rotateY(-8deg)
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0) rotateY(0)
+  }
+}
+
+@keyframes pageEnterLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-40px) rotateY(8deg)
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0) rotateY(0)
+  }
+}
+
+#mc-display {
+  perspective: 1200px;
+  transform-style: preserve-3d;
+  transition: none;
+}
+
+.mc-display {
+  will-change: transform, opacity;
+}
+
+.mc-exit-left {
+  animation: pageExitLeft .2s ease-in both;
+}
+
+.mc-exit-right {
+  animation: pageExitRight .2s ease-in both;
+}
+
+.mc-enter-right {
+  animation: pageEnterRight .3s ease-out both;
+}
+
+.mc-enter-left {
+  animation: pageEnterLeft .3s ease-out both;
+}
+
+/* Swipe hint on first Mushaf load */
+.mc-display::after {
+  content: '← swipe →';
+  position: absolute;
+  bottom: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 11px;
+  color: var(--t4);
+  opacity: 0;
+  pointer-events: none;
+  animation: swipeHint 3s ease-in-out 2s 1 forwards;
+}
+
+@keyframes swipeHint {
+
+  0%,
+  100% {
+    opacity: 0
+  }
+
+  30%,
+  70% {
+    opacity: .6
+  }
+}
+
+/* ── Mushaf Viewer ── */
+.mc {
+  background: var(--bg2);
+  border-bottom: 1px solid var(--bd);
+  padding: 10px 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.mc-nav {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.mc-btn {
+  padding: 5px 10px;
+  background: var(--sf);
+  border: 1px solid var(--bd);
+  border-radius: var(--r-sm);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--t2);
+  transition: all var(--trans);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.mc-btn:hover {
+  border-color: var(--em);
+  color: var(--t1);
+}
+
+.mc-btn.on {
+  background: var(--em-dim);
+  color: var(--em3);
+  border-color: var(--em-glow);
+}
+
+.mc-btn:disabled {
+  opacity: .3;
+  cursor: not-allowed;
+}
+
+.mc-nav-btn {
+  font-size: 18px;
+  font-weight: 700;
+  min-width: 36px;
+  text-align: center;
+}
+
+.mc-page-inp-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.mc-page-inp {
+  width: 60px;
+  background: var(--sf);
+  border: 1px solid var(--bd);
+  border-radius: var(--r-sm);
+  padding: 5px 8px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--t1);
+  text-align: center;
+  outline: none;
+}
+
+.mc-page-inp:focus {
+  border-color: var(--em);
+}
+
+.mc-page-of {
+  font-size: 11px;
+  color: var(--t3);
+}
+
+.mc-opts {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.mc-size-grp {
+  display: flex;
+  gap: 4px;
+}
+
+.mc-lbl {
+  font-size: 11px;
+  color: var(--t3);
+  font-weight: 600;
+}
+
+.mc-sel {
+  background: var(--sf);
+  border: 1px solid var(--bd);
+  border-radius: var(--r-sm);
+  padding: 5px 8px;
+  font-size: 11px;
+  color: var(--t2);
+  cursor: pointer;
+  outline: none;
+}
+
+.mc-jmp {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.mc-jbtn {
+  font-size: 10px;
+  padding: 3px 7px;
+  min-width: unset;
+}
+
+.mc-display {
+  padding: 24px;
+  direction: rtl;
+}
+
+.mc-display.mc-night {
+  background: #000;
+}
+
+.mc-night .mp-page {
+  color: #f5eddc !important;
+}
+
+.mc-loading {
+  text-align: center;
+  padding: 40px;
+  color: var(--t3);
+  font-size: 13px;
+}
+
+.mc-error {
+  text-align: center;
+  padding: 24px;
+  color: var(--red);
+  font-size: 13px;
+}
+
+.mp-page {
+  font-family: var(--font-ar);
+  direction: rtl;
+  text-align: justify;
+  line-height: 2.4;
+  color: var(--t1);
+}
+
+.mp-surah-name {
+  display: block;
+  text-align: center;
+  font-family: var(--font-ar);
+  font-size: 22px;
+  color: var(--gd);
+  margin: 12px 0 4px;
+}
+
+.mp-bism {
+  display: block;
+  text-align: center;
+  font-family: var(--font-ar);
+  font-size: 20px;
+  color: var(--t2);
+  margin: 4px 0 12px;
+}
+
+.mp-ayah {
+  cursor: pointer;
+  border-radius: 4px;
+  padding: 2px;
+  transition: background var(--trans);
+}
+
+.mp-ayah:hover {
+  background: var(--em-dim);
+}
+
+.mp-ayah.active {
+  background: var(--gd-dim);
+}
+
+.mp-ayah-end {
+  font-size: .7em;
+  color: var(--gd);
+}
+
+.mp-bottom {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 0 8px;
+  direction: ltr;
+  flex-wrap: wrap;
+}
+
+.mp-nav-btn {
+  padding: 7px 16px;
+  background: var(--sf);
+  border: 1px solid var(--bd);
+  border-radius: var(--r-sm);
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--t2);
+  cursor: pointer;
+  transition: all var(--trans);
+}
+
+.mp-nav-btn:hover:not([disabled]) {
+  border-color: var(--em);
+  color: var(--t1);
+}
+
+.mp-nav-btn[disabled] {
+  opacity: .3;
+  cursor: not-allowed;
+}
+
+.mp-prog-wrap {
+  flex: 1;
+  height: 4px;
+  background: var(--sf2);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.mp-prog-fill {
+  height: 100%;
+  background: var(--em2);
+  border-radius: 2px;
+  transition: width .3s;
+}
+
+.mp-page-num {
+  font-size: 11px;
+  color: var(--t3);
+  font-variant-numeric: tabular-nums;
+}
+
+.mc-tip {
+  position: fixed;
+  bottom: calc(var(--player-h) + 12px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--sf);
+  border: 1px solid var(--bd2);
+  border-radius: var(--r);
+  padding: 12px 16px;
+  max-width: 340px;
+  box-shadow: var(--sh2);
+  z-index: 700;
+  font-size: 13px;
+  color: var(--t2);
+}
+
+.mc-tip-ar {
+  font-family: var(--font-ar);
+  font-size: 22px;
+  color: var(--t1);
+  direction: rtl;
+  text-align: right;
+  margin-bottom: 6px;
+}
+
+.mc-tip-tr {
+  font-size: 12px;
+  color: var(--t3);
+  line-height: 1.65;
+  margin-bottom: 8px;
+}
+
+.mc-tip-close {
+  float: right;
+  color: var(--t3);
+  cursor: pointer;
+  font-size: 14px;
+}
+
+/* ── Mushaf fullscreen ── */
+.mc-fullscreen {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 9999 !important;
+  background: var(--bg) !important;
+  overflow-y: auto !important;
+  display: block !important;
+}
+
+#pg-mushaf:fullscreen,
+#pg-mushaf:-webkit-full-screen {
+  background: var(--bg);
+  overflow-y: auto;
+}
+
+#pg-mushaf:fullscreen .mc,
+#pg-mushaf:-webkit-full-screen .mc {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+#pg-mushaf:fullscreen .mp-page {
+  font-size: 30px !important;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* ── Keyframes ── */
+@keyframes softPulse {
+
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1)
+  }
+
+  50% {
+    opacity: .6;
+    transform: scale(.85)
+  }
+}
+
+
+/* ── RADIO / SURAH PLAYER ── */
+.radio-wrap {
+  background-color: var(--bg);
+  color: var(--t1);
+  font-family: var(--font-ui);
+  padding: var(--space-6);
+}
+
+/* .page-hero h2 {
+  font-size: var(--text-2xl);
+  color: var(--em);
+  margin-bottom: var(--space-2);
+} */
+
+/* .page-hero p {
+  font-size: var(--text-base);
+  color: var(--t2);
+} */
+
+/* Quick Play Buttons */
+/* .rt-btns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+
+.mc-btn {
+  background-color: var(--em2);
+  color: var(--t1);
+  border: none;
+  border-radius: var(--r);
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--text-sm);
+  cursor: pointer;
+  transition: var(--trans);
+}
+
+.mc-btn:hover {
+  background-color: var(--em3);
+  box-shadow: 0 4px 12px var(--em-dim);
+} */
+
+/* Reciter Grid */
+.recg {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: var(--space-4);
+  margin-top: var(--space-4);
+}
+
+/* Playlist Cards */
+.radio-playlists {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--space-4);
+  margin-top: var(--space-3);
+}
+
+.rpl-card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  background-color: var(--bg2);
+  border-radius: var(--r);
+  padding: var(--space-3);
+  cursor: pointer;
+  transition: var(--trans);
+  box-shadow: var(--sh);
+}
+
+.rpl-card:hover {
+  background-color: var(--bg3);
+  box-shadow: var(--sh2);
+}
+
+.rpl-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--r);
+  background-color: var(--em-dim);
+  color: var(--em);
+  font-size: 28px;
+}
+
+/* Playlist Names & Subtitles */
+.rpl-name {
+  font-weight: 600;
+  color: var(--t1);
+  font-size: var(--text-base);
+}
+
+.rpl-sub {
+  font-size: var(--text-sm);
+  color: var(--t2);
+}
+
+/* Surah Cards */
+.radio-g {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: var(--space-4);
+  margin-top: var(--space-4);
+}
+
+.rc {
+  background-color: var(--bg2);
+  border-radius: var(--r);
+  padding: var(--space-3);
+  cursor: pointer;
+  transition: var(--trans);
+  box-shadow: var(--sh);
+  text-align: center;
+}
+
+.rc:hover {
+  background-color: var(--bg3);
+  box-shadow: var(--sh2);
+}
+
+.rc-img {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 80px;
+  border-radius: var(--r);
+  background-color: var(--sf2);
+  margin-bottom: var(--space-2);
+}
+
+.rc-icon {
+  font-size: 36px;
+  color: var(--em);
+}
+
+.rc-body h3 {
+  font-size: var(--text-base);
+  color: var(--t1);
+  margin-bottom: var(--space-1);
+}
+
+.rc-body p {
+  font-size: var(--text-sm);
+  color: var(--t2);
+}
+
+/* Section Headers */
+/* .sh h2 {
+  font-size: var(--text-xl);
+  font-weight: 600;
+  color: var(--em2);
+  margin-bottom: var(--space-3);
+} */
+
+/* Material Symbols General */
+.material-symbols-outlined {
+  vertical-align: middle;
+  color: var(--em);
+}
+
+/* Hover / Active Effects for Dark/HC Themes */
+[data-theme="dark"] .mc-btn:hover,
+[data-theme="dark-hc"] .mc-btn:hover {
+  box-shadow: 0 6px 16px var(--em-glow);
+}
+
+[data-theme="light"] .rc,
+[data-theme="light"] .rpl-card {
+  background-color: var(--sf);
+  box-shadow: var(--sh);
+}
+
+[data-theme="light"] .rc:hover,
+[data-theme="light"] .rpl-card:hover {
+  background-color: var(--sf2);
+  box-shadow: var(--sh2);
+}

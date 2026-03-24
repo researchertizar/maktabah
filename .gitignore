@@ -1,0 +1,26 @@
+# Environment — NEVER commit real credentials
+.env
+.env.local
+.evn.example
+.env.production
+env.example.txt
+
+# .env.example SHOULD be committed — it's the template for collaborators
+
+# Dependencies (auto-regenerated via npm install)
+node_modules/
+package-lock.json
+
+# Build output
+dist/
+.cache/
+package_maktabah.zip
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor
+*.bak
+*.swp
+.vscode/
